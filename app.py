@@ -1,33 +1,41 @@
 """
     Author: AaronTook (https://AaronTook.github.io)
-    File Last Modified: 2/14/2024
+    File Last Modified: 2/18/2024
     File Name: app.py
     Project Name: f_x
 """
 
-def f_x(f, x): # Evaluate f(x).
+def f_x(f, x):
     split_chars = ['+', '-', '*', '/']
+    
+    # Format based on first term and remove whitespace.
+    if not f.strip().startswith("-"):
+        f = "+" + f
+    f = "0" + f.strip()
+    f = f.replace(" ", "")
+    
+    # Split into terms based on split_chars.
     terms = []
     operators = []
-    current_term = ""
-    term_start = 0
-    if f.startswith("-"):
-        f = "0" + f
+    start_of_term = 0
     for i in range(len(f)):
-        if f[i] in split_chars:
-            terms.append(f[term_start : i].strip())
-            term_start = i
-            operators.append("+")#(f[i])
-    terms.append(f[i : ].strip())
-    for term in terms:
-        evaluate_x_term(term, x)
-    string_f = ""
-    operators.append("")
+        char = f[i]
+        if char in split_chars:
+            terms.append(f[start_of_term : i])
+            start_of_term = i+1
+            operators.append(char)
     
+    terms.append(f[start_of_term  : ])
     
-    for i in range(len(terms)):
-        string_f += (evaluate_x_term(terms[i], x) + operators[i])
-    return eval(string_f)
+    # Evaluate the equation terms and calculate the final answer.
+    number_of_terms = len(terms)
+    string_to_eval = ""
+    for i in range(number_of_terms): # Iterate through each term and operator.
+        string_to_eval += evaluate_x_term(terms[i], x)
+        if i !=  number_of_terms-1:
+            string_to_eval += operators[i]
+        else:
+            return eval(string_to_eval)
 
 def evaluate_x_term(term, x): # Evaluate an individual term.
     if "^" in term:
@@ -45,6 +53,7 @@ def evaluate_x_term(term, x): # Evaluate an individual term.
     return str(eval(term.replace("x", f"*{x}")))
 
 if __name__== "__main__":
+    # Run a simple input for the program demo.
     user_f_x = input("f(x) = ")
     user_x = input("x = ")
     try:
@@ -52,3 +61,4 @@ if __name__== "__main__":
     except:
         print("Invalid f(x) or unexpected crash.")
         
+    
